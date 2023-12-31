@@ -1,2 +1,7 @@
 # Decentralised-Lottery-System
 This Lottery smart contract harnesses Chainlink's VRF to introduce randomness to winner selection, providing a decentralized and transparent lottery experience on the Ethereum blockchain.
+This smart contract represents a decentralized lottery system built on the Ethereum blockchain, leveraging the Chainlink VRF (Verifiable Random Function) for secure and tamper-proof random number generation. The contract allows participants to enter the lottery by sending 1 ether, and the manager, who initiates and oversees the lottery, can trigger the process to pick a predefined number of winners.
+
+Upon the manager's request, the contract utilizes Chainlink's VRF to generate a random number, ensuring fairness in selecting winners. The selected winners receive their share of the total prize fund, and the lottery resets for the next round.
+
+Advantages of this smart contract include transparency, as the randomness of the selection process is secured by Chainlink's VRF, reducing the risk of manipulation. Additionally, the use of blockchain ensures immutability, providing a tamper-resistant record of lottery transactions. The decentralized nature of the lottery enhances accessibility and eliminates the need for a central authority, promoting trust and fairness among participants. Overall, the smart contract provides a secure and transparent solution for conducting lotteries on the Ethereum blockchain.
