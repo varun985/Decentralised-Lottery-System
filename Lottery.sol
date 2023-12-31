@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0
-
 pragma solidity >=0.7.0 <0.9.0;
 import "@chainlink/contracts/src/v0.7/VRFConsumerBase.sol";
 
@@ -8,30 +7,24 @@ contract Lottery is VRFConsumerBase {
     address payable[] public players;
     address payable[] public winners;
     uint public totalPrize;
-    bytes32 public keyHash; // Declare keyHash as a public variable
+    bytes32 public keyHash;
     uint256 internal fee;
-    address internal vrfCoordinator; // Declare vrfCoordinator variable
-    uint256 public randomResult;
-    bytes32 internal requestId;
+    address internal vrfCoordinator;
 
     event RequestedRandomness(bytes32 indexed requestId);
 
-    // Deployed Chainlink VRF Coordinator contract address
-    address vrfCoordinatorAddress = 0xb3dCcb4Cf7a26f6cf6B120Cf5A73875B7BBc655B;
+    uint256 public randomResult; // Declare randomResult variable
 
-    // Deployed LINK token contract address
-    address linkTokenAddress = 0x01BE23585060835E02B77ef475b0Cc51aA1e0709;
-
-    // Set the fee in LINK tokens
-    uint256 public constant LINK_FEE = 1 * 10**18; // 1 LINK
-
-    constructor(address _vrfCoordinator, address _link, bytes32 _keyHash, uint256 _fee)
-        VRFConsumerBase(_vrfCoordinator, _link)
+    constructor()
+        VRFConsumerBase(
+            0xb3dCcb4Cf7a26f6cf6B120Cf5A73875B7BBc655B, // VRF coordinator address
+            0x01BE23585060835E02B77ef475b0Cc51aA1e0709  // LINK token address
+        )
     {
         manager = msg.sender;
-        keyHash = _keyHash; // Assign value to keyHash
-        fee = _fee;
-        vrfCoordinator = _vrfCoordinator; // Assign value to vrfCoordinator
+        keyHash = 0x2ed0feb3e7fd2022120aa84fab1945545a9f2ffc9076fd6156fa96eaff4c1311; // Replace with your specific key hash
+        fee = 0.1 * 10**18; // Replace with your specific fee value
+        vrfCoordinator = 0xb3dCcb4Cf7a26f6cf6B120Cf5A73875B7BBc655B; // Replace with your specific VRF coordinator address
     }
 
     function participate() public payable {
@@ -46,14 +39,13 @@ contract Lottery is VRFConsumerBase {
 
     function requestRandomNumber() internal returns (bytes32) {
         require(LINK.balanceOf(address(this)) >= fee, "Not enough LINK tokens");
-        requestId = requestRandomness(keyHash, fee);
+        bytes32 requestId = requestRandomness(keyHash, fee);
         emit RequestedRandomness(requestId);
         return requestId;
     }
 
     function fulfillRandomness(bytes32 _requestId, uint256 randomness) internal override {
         require(msg.sender == vrfCoordinator, "Fulfillment only allowed by Coordinator");
-        require(requestId == _requestId, "Unexpected requestId");
         randomResult = randomness;
     }
 
@@ -61,7 +53,7 @@ contract Lottery is VRFConsumerBase {
         require(manager == msg.sender, "You are not the manager");
         require(players.length >= numberOfWinners, "Not enough players for the specified number of winners");
 
-        requestId = requestRandomNumber();
+        bytes32 requestId = requestRandomNumber();
 
         uint256 r = randomResult;
 
